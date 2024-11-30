@@ -1,0 +1,83 @@
+{
+    "name": "rezak/pest-test-helpers",
+    "description": "Custom Pest assertions for Laravel",
+    "version": "1.0.0",
+    "type": "library",
+    "keywords": [
+        "pest",
+        "assertions",
+        "laravel",
+        "testing",
+        "php",
+        "custom-assertions",
+        "unit-testing",
+        "laravel-package"
+    ],
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/rezak9876/pest-test-helpers/issues",
+        "source": "https://github.com/rezak9876/pest-test-helpers"
+    },
+    "authors": [
+        {
+            "name": "RezaK",
+            "email": "rezak9876.official@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "RezaK\\PestTestHelpers\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RezaK\\PestTestHelpers\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    },
+    "require": {
+        "php": "*",
+        "illuminate/support": "*"
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.5",
+        "orchestra/testbench": "^9.5",
+        "pestphp/pest-plugin-laravel": "^3.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RezaK\\PestTestHelpers\\AssertionServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
+        ],
+        "lint": [
+            "@php vendor/bin/phpstan analyse --verbose --ansi"
+        ],
+        "test": [
+            "@php vendor/bin/pest"
+        ]
+    }
+}
