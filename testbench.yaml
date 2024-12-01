@@ -1,4 +1,5 @@
 providers:
+  - RezaK\PestTestHelpers\AssertionServiceProvider
 
 migrations:
   - workbench/database/migrations
