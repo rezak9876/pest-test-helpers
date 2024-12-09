@@ -13,9 +13,16 @@ class AssertionServiceProvider extends ServiceProvider
 
     protected function registerAssertions()
     {
-        expect()->extend('routeCanSeeRequest', function ($request)
-        {
-            Assertions::assertRouteCanSeeRequest($this->value, $request);
+        expect()->extend('routeCanSeeFormRequest', function ($request) {
+            Assertions::assertrouteCanSeeFormRequest($this->value, $request);
+        });
+
+        expect()->extend('toFailValidationWithDataAndException', function (array $data, array $expectedErrors) {
+            Assertions::assertFormRequestValidationFailsWithErrors($this->value, $data, $expectedErrors);
+        });
+
+        expect()->extend('toValidateData', function (array $data) {
+            Assertions::assertValidDataForRequest($this->value, $data);
         });
     }
 }
