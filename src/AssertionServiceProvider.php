@@ -24,5 +24,30 @@ class AssertionServiceProvider extends ServiceProvider
         expect()->extend('toValidateData', function (array $data) {
             Assertions::assertValidDataForRequest($this->value, $data);
         });
+
+        $this->registerProviderAssertions();
+    }
+
+    protected function registerProviderAssertions()
+    {
+        expect()->extend('configMerged', function () {
+            ProviderAssertions::assertConfigMerged($this->value);
+        });
+
+        expect()->extend('configSet', function ($exceptedConfigs) {
+            ProviderAssertions::assertConfigSet($this->value, $exceptedConfigs);
+        });
+
+        expect()->extend('filePublished', function ($destination) {
+            ProviderAssertions::assertFilePublished($this->value, $destination);
+        });
+
+        expect()->extend('routesLoaded', function () {
+            ProviderAssertions::assertRoutesLoaded($this->value);
+        });
+
+        expect()->extend('migrationsLoaded', function () {
+            ProviderAssertions::assertMigrationsLoaded($this->value);
+        });
     }
 }
