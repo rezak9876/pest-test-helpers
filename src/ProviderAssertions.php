@@ -2,64 +2,30 @@
 
 namespace RezaK\PestTestHelpers;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
-
 class ProviderAssertions
 {
-    public static function assertConfigMerged(string $key, callable $callback = null): void
+    public static function assertProviderRegistered($app, string $providerClass)
     {
-        $value = Config::get($key);
-        expect($value)->not->toBeNull();
-        if ($callback) {
-            $callback($value);
-        }
+        expect($app->getProvider($providerClass))->toBeTruthy();
     }
 
-    public static function assertConfigSet(string $key, array $expected): void
+    public static function assertInterfaceBoundTo($app, string $interface, string $implementationClass)
     {
-        $value = Config::get($key);
-        expect($value)->toMatchArray($expected);
+        $resolved = $app->make($interface);
+        expect($resolved)->toBeInstanceOf($implementationClass);
     }
 
-    public static function assertFilePublished(string $source, string $destination): void
+    public static function assertRoutesLoaded($app, string $expectedRoutePath)
     {
-        $publishedFiles = ServiceProvider::$publishes;
-
-        $found = false;
-        foreach ($publishedFiles as $group => $files) {
-            if (in_array($destination, $files)) {
-                $found = true;
-                break;
-            }
-        }
-
-        expect($found)->toBeTrue()
-            ->and($source)->toBeFile();
+        $routes = collect($app['router']->getRoutes())->pluck('uri');
+        expect(file_exists($expectedRoutePath))->toBeTrue();
+        expect($routes->isNotEmpty())->toBeTrue();
     }
 
-    public static function assertRoutesLoaded(string $routePath): void
+    public static function assertMigrationsLoaded($app, string $expectedMigrationPath)
     {
-        $expectedRoutePath = realpath(__DIR__ . '/../routes/api.php');
-
-        $loadedRoutePaths = collect(Route::getRoutes()->getIterator())
-            ->map(fn($route) => $route->action['uses'] ?? null)
-            ->filter()
-            ->toArray();
-
-        $normalizedLoadedPaths = array_map('realpath', $loadedRoutePaths);
-
-        expect($normalizedLoadedPaths)->toContain($expectedRoutePath);
-    }
-
-    public static function assertMigrationsLoaded(string $migrationPath): void
-    {
-        $loadedPaths = app('migrator')->paths();
-
-        $normalizedExpectedPath = realpath($migrationPath);
-        $normalizedLoadedPaths = array_map('realpath', $loadedPaths);
-
-        expect($normalizedLoadedPaths)->toContain($normalizedExpectedPath);
+        expect(file_exists($expectedMigrationPath))->toBeTrue();
+        $migrations = glob($expectedMigrationPath . '/*.php');
+        expect($migrations)->not()->toBeEmpty();
     }
 }

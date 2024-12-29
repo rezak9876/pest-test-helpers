@@ -42,6 +42,13 @@ class Assertions
     {
         $request = new $requestClass();
         $validator = Validator::make($data, $request->rules());
+
+        if (!$validator->passes()) {
+            $errors = $validator->errors()->toArray();
+            $errorMessage = 'Validation failed for request class ' . $requestClass . ' with the following errors: ' . json_encode($errors);
+            throw new \AssertionError($errorMessage);
+        }
+
         expect($validator->passes())->toBeTrue();
     }
 }

@@ -42,12 +42,20 @@ class AssertionServiceProvider extends ServiceProvider
             ProviderAssertions::assertFilePublished($this->value, $destination);
         });
 
-        expect()->extend('routesLoaded', function () {
-            ProviderAssertions::assertRoutesLoaded($this->value);
+        expect()->extend('routesLoaded', function ($expectedRoutePath) {
+            ProviderAssertions::assertRoutesLoaded($this->value, $expectedRoutePath);
         });
 
-        expect()->extend('migrationsLoaded', function () {
-            ProviderAssertions::assertMigrationsLoaded($this->value);
+        expect()->extend('migrationsLoaded', function ($expectedMigrationPath) {
+            ProviderAssertions::assertMigrationsLoaded($this->value, $expectedMigrationPath);
+        });
+
+        expect()->extend('providerRegistered', function ($providerClass) {
+            ProviderAssertions::assertProviderRegistered($this->value, $providerClass);
+        });
+
+        expect()->extend('interfaceBoundTo', function ($interface, $implementationClass) {
+            ProviderAssertions::assertInterfaceBoundTo($this->value, $interface, $implementationClass);
         });
     }
 }
